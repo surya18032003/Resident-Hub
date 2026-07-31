@@ -1,0 +1,54 @@
+<header class="topbar">
+  <!-- Only visible on small screens (see topbar.css). -->
+  <button
+    type="button"
+    class="topbar__menu"
+    (click)="menuToggle.emit()"
+    aria-label="Toggle navigation"
+  >
+    <app-icon name="menu" [size]="20" />
+  </button>
+
+  <div class="topbar__spacer"></div>
+
+  @if (isAdmin()) {
+    <a class="topbar__bell" routerLink="/admin/notifications" aria-label="Notifications">
+      <app-icon name="bell" [size]="19" />
+      @if (notificationCount() > 0) {
+        <span class="topbar__dot">{{ notificationCount() }}</span>
+      }
+    </a>
+  }
+
+  <div class="account">
+    <button
+      type="button"
+      class="account__trigger"
+      (click)="toggleAccountMenu()"
+      [attr.aria-expanded]="accountMenuOpen"
+      aria-haspopup="menu"
+    >
+      <span class="account__avatar">{{ initials() }}</span>
+      <span class="account__text">
+        <strong>{{ displayName() }}</strong>
+        <small>{{ roleLabel() }}</small>
+      </span>
+      <app-icon name="chevron-down" [size]="16" />
+    </button>
+
+    @if (accountMenuOpen) {
+      <div class="account__menu" role="menu">
+        <div class="account__head">
+          <p class="account__name">{{ displayName() }}</p>
+          <p class="account__email">{{ email() }}</p>
+          <span class="badge">{{ roleLabel() }}</span>
+        </div>
+
+        <button type="button" class="account__item" role="menuitem" (click)="logout()">
+          <app-icon name="logout" [size]="17" />
+          Sign out
+        </button>
+      </div>
+    }
+  </div>
+</header>

@@ -1,0 +1,20 @@
+<div class="search">
+  <span class="search__icon"><app-icon name="search" [size]="18" /></span>
+
+  <!-- #field is a template reference: it lets us pass this input element
+       straight into clear() below. -->
+  <input
+    #field
+    type="search"
+    class="search__input"
+    [placeholder]="placeholder"
+    [attr.aria-label]="placeholder"
+    (input)="onInput($event)"
+  />
+
+  @if (hasValue) {
+    <button type="button" class="search__clear" (click)="clear(field)" aria-label="Clear search">
+      <app-icon name="close" [size]="15" />
+    </button>
+  }
+</div>

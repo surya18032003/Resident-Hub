@@ -1,0 +1,30 @@
+.skeleton--cell {
+  display: block;
+  height: 0.9rem;
+  width: 80%;
+}
+
+.who {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.who__avatar {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  flex: none;
+  border-radius: 50%;
+  background: var(--brand-soft);
+  color: var(--brand-strong);
+  font-size: 0.8125rem;
+  font-weight: 650;
+  text-transform: uppercase;
+}
+
+.who__name {
+  font-weight: 600;
+  color: var(--text);
+}

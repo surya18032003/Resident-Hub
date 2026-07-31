@@ -1,0 +1,40 @@
+:host {
+  display: block;
+  max-width: 56rem;
+}
+
+.form-alert {
+  margin-bottom: 1.25rem;
+}
+
+.control {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input--with-action {
+  padding-right: 2.6rem;
+}
+
+.control__action {
+  position: absolute;
+  right: 0.45rem;
+  display: flex;
+  padding: 0.35rem;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-subtle);
+  cursor: pointer;
+}
+
+.control__action:hover {
+  color: var(--text);
+  background: var(--surface-alt);
+}
+
+.req {
+  color: var(--danger);
+  margin-left: 0.15rem;
+}

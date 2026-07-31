@@ -1,0 +1,168 @@
+<app-page-header
+  title="Notifications"
+  subtitle="Documents that have expired, expire today, or are coming up."
+>
+  <button type="button" class="btn" (click)="refresh()" [disabled]="isLoading()">Refresh</button>
+  <a class="btn" routerLink="/admin/documents">
+    <app-icon name="folder" [size]="16" />
+    All documents
+  </a>
+</app-page-header>
+
+<div class="summary" [class.summary--alert]="actionCount() > 0">
+  <span class="summary__icon">
+    <app-icon [name]="actionCount() > 0 ? 'alert' : 'check'" [size]="22" />
+  </span>
+  <div>
+    <p class="summary__title">{{ headline() }}</p>
+    <p class="summary__sub">{{ now | date: 'EEEE, dd MMMM yyyy' }}</p>
+  </div>
+</div>
+
+@if (isLoading() && !hasLoaded()) {
+  <div class="list">
+    @for (row of [0, 1]; track row) {
+      <div class="card note note--skeleton">
+        <span class="skeleton note__skeleton-icon"></span>
+        <div class="note__skeleton-lines">
+          <span class="skeleton" style="width: 40%"></span>
+          <span class="skeleton" style="width: 65%"></span>
+        </div>
+      </div>
+    }
+  </div>
+} @else if (totalCount() === 0) {
+  <div class="card">
+    <app-empty-state
+      icon="check"
+      title="You're all caught up"
+      message="No document has expired or is due in the near future. Documents appear here automatically as their expiry date approaches."
+    >
+      <a class="btn btn--primary btn--sm" routerLink="/admin/documents/create">Upload a document</a>
+    </app-empty-state>
+  </div>
+} @else {
+  <!-- Expires today — the headline case from the brief -->
+  @if (today().length > 0) {
+    <section class="group">
+      <h2 class="group__title">
+        <span class="group__dot group__dot--today"></span>
+        Expires today
+        <span class="group__count">{{ today().length }}</span>
+      </h2>
+
+      <div class="list">
+        @for (doc of today(); track doc._id) {
+          <article class="card note note--today">
+            <span class="note__icon note__icon--today"><app-icon name="alert" [size]="20" /></span>
+
+            <div class="note__body">
+              <p class="note__title">⚠ {{ doc.document_title }} expires today</p>
+              <p class="note__meta">
+                <span class="badge">{{ doc.document_category || 'Uncategorised' }}</span>
+                <span class="note__date">
+                  <app-icon name="calendar" [size]="14" />
+                  Expiry date: <strong>{{ doc.expiry_date | apiDate }}</strong>
+                </span>
+              </p>
+              @if (doc.remarks) {
+                <p class="note__remarks">{{ doc.remarks }}</p>
+              }
+            </div>
+
+            @if (fileUrl(doc); as url) {
+              <a class="btn btn--sm" [href]="url" target="_blank" rel="noopener">
+                <app-icon name="eye" [size]="14" />
+                View
+              </a>
+            }
+          </article>
+        }
+      </div>
+    </section>
+  }
+
+  <!-- Already past their expiry date -->
+  @if (expired().length > 0) {
+    <section class="group">
+      <h2 class="group__title">
+        <span class="group__dot group__dot--expired"></span>
+        Already expired
+        <span class="group__count">{{ expired().length }}</span>
+      </h2>
+
+      <div class="list">
+        @for (doc of expired(); track doc._id) {
+          <article class="card note note--expired">
+            <span class="note__icon note__icon--expired"
+              ><app-icon name="alert" [size]="20"
+            /></span>
+
+            <div class="note__body">
+              <p class="note__title">⚠ {{ doc.document_title }} has expired</p>
+              <p class="note__meta">
+                <span class="badge">{{ doc.document_category || 'Uncategorised' }}</span>
+                <span class="badge badge--danger">{{ timing(doc) }}</span>
+                <span class="note__date">
+                  <app-icon name="calendar" [size]="14" />
+                  Expiry date: <strong>{{ doc.expiry_date | apiDate }}</strong>
+                </span>
+              </p>
+              @if (doc.remarks) {
+                <p class="note__remarks">{{ doc.remarks }}</p>
+              }
+            </div>
+
+            @if (fileUrl(doc); as url) {
+              <a class="btn btn--sm" [href]="url" target="_blank" rel="noopener">
+                <app-icon name="eye" [size]="14" />
+                View
+              </a>
+            }
+          </article>
+        }
+      </div>
+    </section>
+  }
+
+  <!-- Coming up -->
+  @if (soon().length > 0) {
+    <section class="group">
+      <h2 class="group__title">
+        <span class="group__dot group__dot--soon"></span>
+        Expiring within {{ soonDays }} days
+        <span class="group__count">{{ soon().length }}</span>
+      </h2>
+
+      <div class="list">
+        @for (doc of soon(); track doc._id) {
+          <article class="card note note--soon">
+            <span class="note__icon note__icon--soon"><app-icon name="clock" [size]="20" /></span>
+
+            <div class="note__body">
+              <p class="note__title">{{ doc.document_title }}</p>
+              <p class="note__meta">
+                <span class="badge">{{ doc.document_category || 'Uncategorised' }}</span>
+                <span class="badge badge--warning">{{ timing(doc) }}</span>
+                <span class="note__date">
+                  <app-icon name="calendar" [size]="14" />
+                  Expiry date: <strong>{{ doc.expiry_date | apiDate }}</strong>
+                </span>
+              </p>
+              @if (doc.remarks) {
+                <p class="note__remarks">{{ doc.remarks }}</p>
+              }
+            </div>
+
+            @if (fileUrl(doc); as url) {
+              <a class="btn btn--sm" [href]="url" target="_blank" rel="noopener">
+                <app-icon name="eye" [size]="14" />
+                View
+              </a>
+            }
+          </article>
+        }
+      </div>
+    </section>
+  }
+}

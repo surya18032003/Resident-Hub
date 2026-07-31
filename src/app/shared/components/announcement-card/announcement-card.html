@@ -1,0 +1,55 @@
+<article class="post" [class.post--pinned]="announcement.pinned">
+  <header class="post__head">
+    <span class="post__avatar" [attr.data-category]="category()" aria-hidden="true">
+      {{ initial() }}
+    </span>
+
+    <div class="post__meta">
+      <h3 class="post__title">{{ announcement.title }}</h3>
+      <p class="post__sub">
+        <span class="chip" [attr.data-category]="category()">{{ category() | titlecase }}</span>
+        <span class="post__dot">•</span>
+        <span>{{ announcement.created_time | timeAgo }}</span>
+      </p>
+    </div>
+
+    @if (canPin) {
+      <button
+        type="button"
+        class="pin"
+        [class.pin--on]="announcement.pinned"
+        [disabled]="pinning"
+        (click)="onPinClick()"
+        [attr.aria-label]="announcement.pinned ? 'Unpin announcement' : 'Pin announcement'"
+      >
+        <app-icon name="pin" [size]="17" [filled]="announcement.pinned === true" />
+        <span>{{ announcement.pinned ? 'Pinned' : 'Pin' }}</span>
+      </button>
+    } @else if (announcement.pinned) {
+      <!-- The admin view shows the pin state, but cannot change it. -->
+      <span class="pin pin--static" title="Pinned by residents">
+        <app-icon name="pin" [size]="16" [filled]="true" />
+        <span>Pinned</span>
+      </span>
+    }
+  </header>
+
+  <p class="post__summary">{{ announcement.summary }}</p>
+
+  @if (imageUrl(); as url) {
+    <div class="post__media">
+      <img [src]="url" [alt]="announcement.title" loading="lazy" (error)="onImageError()" />
+    </div>
+  }
+
+  <footer class="post__foot">
+    <span class="post__fact">
+      <app-icon name="calendar" [size]="15" />
+      Event date: <strong>{{ announcement.event_date | apiDate }}</strong>
+    </span>
+    <span class="post__fact">
+      <app-icon name="clock" [size]="15" />
+      Posted: <strong>{{ announcement.created_time | apiDate: 'dd MMM yyyy' : true }}</strong>
+    </span>
+  </footer>
+</article>

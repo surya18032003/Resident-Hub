@@ -1,0 +1,143 @@
+<app-page-header
+  title="Create Announcement"
+  subtitle="Publish an announcement, event or update to the resident feed."
+>
+  <a class="btn" routerLink="/admin/announcements">
+    <app-icon name="megaphone" [size]="16" />
+    Announcement list
+  </a>
+</app-page-header>
+
+<div class="card">
+  <div class="card__head">
+    <h2 class="card__title">Announcement details</h2>
+    <span class="hint">Fields marked <span class="req">*</span> are required</span>
+  </div>
+
+  <form class="card__body" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    @if (apiError; as message) {
+      <div class="alert alert--error form-alert" role="alert">
+        <app-icon name="alert" [size]="18" />
+        <span>{{ message }}</span>
+      </div>
+    }
+
+    <div class="form-grid">
+      <div class="field">
+        <label class="label" for="category">Category<span class="req">*</span></label>
+        <select id="category" class="select" formControlName="category">
+          @for (category of categories; track category.value) {
+            <option [value]="category.value">{{ category.label }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="field">
+        <label class="label" for="event_date">Event date<span class="req">*</span></label>
+        <input
+          id="event_date"
+          type="date"
+          class="input"
+          [class.input--invalid]="!!error('event_date', 'Event date')"
+          formControlName="event_date"
+        />
+        @if (error('event_date', 'Event date'); as message) {
+          <p class="error"><app-icon name="alert" [size]="13" /> {{ message }}</p>
+        }
+      </div>
+
+      <div class="field field--wide">
+        <label class="label" for="title">Title<span class="req">*</span></label>
+        <input
+          id="title"
+          type="text"
+          class="input"
+          [class.input--invalid]="!!error('title', 'Title')"
+          formControlName="title"
+          placeholder="Annual dance competition"
+          maxlength="120"
+        />
+        @if (error('title', 'Title'); as message) {
+          <p class="error"><app-icon name="alert" [size]="13" /> {{ message }}</p>
+        }
+      </div>
+
+      <div class="field field--wide">
+        <label class="label" for="summary">Summary<span class="req">*</span></label>
+        <textarea
+          id="summary"
+          class="textarea"
+          [class.textarea--invalid]="!!error('summary', 'Summary')"
+          formControlName="summary"
+          placeholder="Share the details residents need to know…"
+          maxlength="1000"
+        ></textarea>
+        @if (error('summary', 'Summary'); as message) {
+          <p class="error"><app-icon name="alert" [size]="13" /> {{ message }}</p>
+        }
+      </div>
+
+      <div class="field field--wide">
+        <label class="label" for="image">Image <span class="hint">(optional)</span></label>
+
+        <div
+          class="drop"
+          [class.drop--active]="dragging"
+          [class.drop--invalid]="!!error('image', 'Image')"
+          (dragover)="onDragOver($event)"
+          (dragleave)="onDragLeave()"
+          (drop)="onDrop($event)"
+        >
+          <input
+            #fileInput
+            id="image"
+            type="file"
+            class="drop__input"
+            [accept]="accept"
+            (change)="onFileInput($event)"
+          />
+          <app-icon name="image" [size]="26" />
+          <p class="drop__title">Drag an image here, or <span>browse</span></p>
+          <p class="drop__hint">PNG, JPG, WEBP or GIF · up to {{ maxSizeMb }} MB</p>
+        </div>
+
+        @if (error('image', 'Image'); as message) {
+          <p class="error"><app-icon name="alert" [size]="13" /> {{ message }}</p>
+        }
+
+        @if (previewUrl; as preview) {
+          <figure class="preview">
+            <img [src]="preview" alt="Selected announcement image preview" />
+            <figcaption>
+              <span class="preview__name">{{ selectedFile?.name }}</span>
+              <button type="button" class="btn btn--sm" (click)="clearFile(fileInput)">
+                <app-icon name="close" [size]="14" />
+                Remove
+              </button>
+            </figcaption>
+          </figure>
+        }
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button
+        type="button"
+        class="btn btn--ghost"
+        (click)="reset(fileInput)"
+        [disabled]="submitting"
+      >
+        Reset
+      </button>
+      <button type="submit" class="btn btn--primary" [disabled]="submitting">
+        @if (submitting) {
+          <span class="spinner" aria-hidden="true"></span>
+          Publishing…
+        } @else {
+          <app-icon name="megaphone" [size]="16" />
+          Publish announcement
+        }
+      </button>
+    </div>
+  </form>
+</div>

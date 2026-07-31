@@ -1,0 +1,61 @@
+<div class="nav">
+  <div class="nav__brand">
+    <span class="nav__logo"><app-icon name="building" [size]="20" /></span>
+    <span class="nav__brand-text">
+      <strong>ResHub</strong>
+      <small>{{ roleLabel() }}</small>
+    </span>
+  </div>
+
+  <nav class="nav__list" aria-label="Main navigation">
+    @for (item of items(); track item.label) {
+      @if (item.children) {
+        <div class="nav__group" [class.nav__group--open]="isOpen(item)">
+          <button
+            type="button"
+            class="nav__link nav__link--group"
+            [class.nav__link--current]="isGroupActive(item)"
+            [attr.aria-expanded]="isOpen(item)"
+            (click)="toggleGroup(item)"
+          >
+            <app-icon [name]="item.icon" [size]="18" />
+            <span class="nav__label">{{ item.label }}</span>
+            <span class="nav__chevron"><app-icon name="chevron-down" [size]="16" /></span>
+          </button>
+
+          @if (isOpen(item)) {
+            <ul class="nav__sub">
+              @for (child of item.children; track child.route) {
+                <li>
+                  <a
+                    class="nav__sublink"
+                    [class.nav__sublink--current]="isActive(child.route)"
+                    [routerLink]="child.route"
+                    [attr.aria-current]="isActive(child.route) ? 'page' : null"
+                  >
+                    {{ child.label }}
+                  </a>
+                </li>
+              }
+            </ul>
+          }
+        </div>
+      } @else {
+        <a
+          class="nav__link"
+          [class.nav__link--current]="isActive(item.route)"
+          [routerLink]="item.route"
+          [attr.aria-current]="isActive(item.route) ? 'page' : null"
+        >
+          <app-icon [name]="item.icon" [size]="18" />
+          <span class="nav__label">{{ item.label }}</span>
+          @if (item.badge === 'notifications' && notificationCount() > 0) {
+            <span class="nav__badge">{{ notificationCount() }}</span>
+          }
+        </a>
+      }
+    }
+  </nav>
+
+  <p class="nav__foot">ResHub · Community Management</p>
+</div>

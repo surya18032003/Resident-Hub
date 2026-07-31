@@ -1,0 +1,83 @@
+<app-page-header title="Announcements" subtitle="Everything published to the community feed.">
+  <button type="button" class="btn" (click)="load()" [disabled]="loading">Refresh</button>
+  <a class="btn btn--primary" routerLink="/admin/announcements/create">
+    <app-icon name="plus" [size]="16" />
+    Create announcement
+  </a>
+</app-page-header>
+
+<div class="toolbar">
+  <app-search-box placeholder="Search announcements…" (valueChange)="onSearch($event)" />
+
+  <div class="chips" role="group" aria-label="Filter by category">
+    @for (filter of filters; track filter.value) {
+      <button
+        type="button"
+        class="chip-btn"
+        [class.chip-btn--on]="category === filter.value"
+        (click)="setCategory(filter.value)"
+      >
+        {{ filter.label }}
+        <span class="chip-btn__count">{{ countFor(filter.value) }}</span>
+      </button>
+    }
+  </div>
+</div>
+
+@if (pinnedCount() > 0) {
+  <p class="pinned-note">
+    <app-icon name="pin" [size]="15" [filled]="true" />
+    {{ pinnedCount() }} announcement{{ pinnedCount() === 1 ? ' is' : 's are' }} currently pinned by
+    residents.
+  </p>
+}
+
+<div class="feed">
+  @if (loading) {
+    @for (item of skeletons; track item) {
+      <div class="card feed__skeleton">
+        <div class="skeleton feed__skeleton-avatar"></div>
+        <div class="feed__skeleton-lines">
+          <span class="skeleton" style="width: 45%"></span>
+          <span class="skeleton" style="width: 80%"></span>
+          <span class="skeleton" style="width: 65%"></span>
+        </div>
+      </div>
+    }
+  } @else if (loadError; as message) {
+    <div class="card">
+      <app-empty-state
+        icon="alert"
+        tone="error"
+        title="Could not load announcements"
+        [message]="message"
+      >
+        <button type="button" class="btn btn--primary btn--sm" (click)="load()">Try again</button>
+      </app-empty-state>
+    </div>
+  } @else if (filtered().length === 0) {
+    <div class="card">
+      <app-empty-state
+        icon="megaphone"
+        [title]="
+          announcements.length === 0 ? 'No announcements yet' : 'Nothing matches this filter'
+        "
+        [message]="
+          announcements.length === 0
+            ? 'Publish your first announcement to reach every resident.'
+            : 'Try another search term or category.'
+        "
+      >
+        @if (announcements.length === 0) {
+          <a class="btn btn--primary btn--sm" routerLink="/admin/announcements/create"
+            >Create announcement</a
+          >
+        }
+      </app-empty-state>
+    </div>
+  } @else {
+    @for (announcement of filtered(); track announcement._id) {
+      <app-announcement-card [announcement]="announcement" />
+    }
+  }
+</div>

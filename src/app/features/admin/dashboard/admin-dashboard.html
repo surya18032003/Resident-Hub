@@ -1,0 +1,168 @@
+<app-page-header
+  [title]="'Welcome back, ' + name()"
+  [subtitle]="'Here is what is happening across the community today.'"
+>
+  <button type="button" class="btn" (click)="load()" [disabled]="loading">Refresh</button>
+  <a class="btn btn--primary" routerLink="/admin/announcements/create">
+    <app-icon name="plus" [size]="16" />
+    New announcement
+  </a>
+</app-page-header>
+
+@if (loadError; as message) {
+  <div class="alert alert--error dash__alert" role="alert">
+    <app-icon name="alert" [size]="18" />
+    <span>Some data could not be loaded: {{ message }}</span>
+  </div>
+}
+
+<section class="stats">
+  <app-stat-card
+    label="Residents"
+    icon="users"
+    [value]="residents.length"
+    [loading]="loading"
+    hint="Owners and tenants"
+    link="/admin/residents"
+  />
+  <app-stat-card
+    label="Announcements"
+    icon="megaphone"
+    tone="info"
+    [value]="announcements.length"
+    [loading]="loading"
+    [hint]="pinnedCount() + ' pinned by residents'"
+    link="/admin/announcements"
+  />
+  <app-stat-card
+    label="Documents"
+    icon="folder"
+    tone="success"
+    [value]="documents.length"
+    [loading]="loading"
+    [hint]="expiringSoonCount() + ' expiring within 30 days'"
+    link="/admin/documents"
+  />
+  <app-stat-card
+    label="Needs attention"
+    icon="bell"
+    tone="warning"
+    [value]="attentionDocs().length"
+    [loading]="loading"
+    [hint]="attentionHint()"
+    link="/admin/notifications"
+  />
+</section>
+
+<div class="dash">
+  <!-- Recent announcements -->
+  <section class="card">
+    <div class="card__head">
+      <h2 class="card__title">Recent announcements</h2>
+      <a class="btn btn--sm btn--ghost" routerLink="/admin/announcements">View all</a>
+    </div>
+
+    @if (loading) {
+      <div class="card__body stack">
+        @for (row of [0, 1, 2]; track row) {
+          <span class="skeleton line"></span>
+        }
+      </div>
+    } @else if (recent().length === 0) {
+      <app-empty-state
+        icon="megaphone"
+        title="No announcements yet"
+        message="Publish your first announcement to reach every resident."
+      >
+        <a class="btn btn--primary btn--sm" routerLink="/admin/announcements/create"
+          >Create announcement</a
+        >
+      </app-empty-state>
+    } @else {
+      <ul class="items">
+        @for (item of recent(); track item._id) {
+          <li class="item">
+            <span class="item__avatar" [attr.data-category]="item.category">{{
+              item.title.charAt(0)
+            }}</span>
+            <div class="item__body">
+              <p class="item__title">{{ item.title }}</p>
+              <p class="item__meta">
+                {{ item.category }} · event {{ item.event_date | apiDate }} ·
+                {{ item.created_time | timeAgo }}
+              </p>
+            </div>
+            @if (item.pinned) {
+              <span class="badge badge--warning"
+                ><app-icon name="pin" [size]="12" [filled]="true" /> Pinned</span
+              >
+            }
+          </li>
+        }
+      </ul>
+    }
+  </section>
+
+  <!-- Expiring today -->
+  <section class="card">
+    <div class="card__head">
+      <h2 class="card__title">Documents needing attention</h2>
+      <a class="btn btn--sm btn--ghost" routerLink="/admin/notifications">Notifications</a>
+    </div>
+
+    @if (loading) {
+      <div class="card__body stack">
+        @for (row of [0, 1]; track row) {
+          <span class="skeleton line"></span>
+        }
+      </div>
+    } @else if (attentionDocs().length === 0) {
+      <app-empty-state
+        icon="check"
+        title="Nothing expired or expiring today"
+        message="Document expiry is under control."
+      />
+    } @else {
+      <ul class="items">
+        @for (doc of attentionDocs(); track doc._id) {
+          <li class="item item--warning">
+            <span class="item__avatar item__avatar--warning"
+              ><app-icon name="alert" [size]="16"
+            /></span>
+            <div class="item__body">
+              <p class="item__title">{{ doc.document_title }}</p>
+              <p class="item__meta">
+                {{ doc.document_category }} · {{ timing(doc) }} ({{ doc.expiry_date | apiDate }})
+              </p>
+            </div>
+          </li>
+        }
+      </ul>
+    }
+  </section>
+
+  <!-- Quick actions -->
+  <section class="card quick">
+    <div class="card__head">
+      <h2 class="card__title">Quick actions</h2>
+    </div>
+    <div class="card__body quick__grid">
+      <a class="quick__link" routerLink="/admin/residents/create">
+        <app-icon name="users" [size]="18" />
+        <span><strong>Create resident</strong><small>Add an owner or tenant</small></span>
+      </a>
+      <a class="quick__link" routerLink="/admin/announcements/create">
+        <app-icon name="megaphone" [size]="18" />
+        <span><strong>Create announcement</strong><small>Publish to the feed</small></span>
+      </a>
+      <a class="quick__link" routerLink="/admin/documents/create">
+        <app-icon name="upload" [size]="18" />
+        <span><strong>Upload document</strong><small>Track an expiry date</small></span>
+      </a>
+      <a class="quick__link" routerLink="/admin/notifications">
+        <app-icon name="bell" [size]="18" />
+        <span><strong>Review notifications</strong><small>Documents expiring today</small></span>
+      </a>
+    </div>
+  </section>
+</div>

@@ -1,0 +1,126 @@
+:host {
+  display: block;
+  /* Perspective on the host so the tile can pitch on hover. */
+  perspective: 900px;
+}
+
+.stat {
+  position: relative;
+  display: flex;
+  gap: 0.9rem;
+  align-items: flex-start;
+  padding: 1.1rem 1.2rem;
+  overflow: hidden;
+  background: linear-gradient(160deg, #fff, var(--surface-alt));
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow:
+    0 1px 2px rgb(16 24 40 / 5%),
+    0 10px 26px -14px rgb(16 24 40 / 22%),
+    inset 0 1px 0 rgb(255 255 255 / 80%);
+  transform-style: preserve-3d;
+  transition:
+    transform 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.22s ease,
+    border-color 0.22s ease;
+}
+
+/* Coloured light along the top edge, tinted per tone. */
+.stat::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 3px;
+  background: linear-gradient(90deg, var(--brand), #818cf8);
+}
+
+.stat--success::before {
+  background: linear-gradient(90deg, var(--success), #34d399);
+}
+.stat--warning::before {
+  background: linear-gradient(90deg, var(--warning), #fbbf24);
+}
+.stat--info::before {
+  background: linear-gradient(90deg, var(--info), #38bdf8);
+}
+
+.stat--link:hover {
+  transform: translateY(-4px) rotateX(5deg);
+  border-color: var(--border-strong);
+  box-shadow:
+    0 2px 4px rgb(16 24 40 / 6%),
+    0 22px 40px -18px rgb(16 24 40 / 38%),
+    inset 0 1px 0 rgb(255 255 255 / 80%);
+}
+
+.stat__icon {
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--radius-md);
+  background: var(--brand-soft);
+  color: var(--brand);
+}
+
+.stat--success .stat__icon {
+  background: var(--success-soft);
+  color: var(--success);
+}
+.stat--warning .stat__icon {
+  background: var(--warning-soft);
+  color: var(--warning-strong);
+}
+.stat--info .stat__icon {
+  background: var(--info-soft);
+  color: var(--info);
+}
+
+.stat__text {
+  min-width: 0;
+}
+
+.stat__label {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-subtle);
+}
+
+.stat__value {
+  margin: 0.2rem 0 0;
+  font-size: 1.65rem;
+  font-weight: 650;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+
+.stat__hint {
+  margin: 0.25rem 0 0;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.stat__skeleton {
+  display: block;
+  width: 3rem;
+  height: 1.65rem;
+  margin-top: 0.3rem;
+  border-radius: var(--radius-sm);
+  background: var(--skeleton);
+  animation: pulse 1.2s ease-in-out infinite;
+}
+
+.stat__overlay {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+
+.stat__overlay:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}

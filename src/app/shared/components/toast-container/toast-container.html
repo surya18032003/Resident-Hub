@@ -1,0 +1,33 @@
+<div class="stack" role="status" aria-live="polite">
+  @for (toast of toasts(); track toast.id) {
+    <div class="toast" [class]="'toast--' + toast.kind">
+      <span class="toast__icon">
+        @switch (toast.kind) {
+          @case ('success') {
+            <app-icon name="check" [size]="20" />
+          }
+          @case ('error') {
+            <app-icon name="alert" [size]="20" />
+          }
+          @default {
+            <app-icon name="info" [size]="20" />
+          }
+        }
+      </span>
+      <div class="toast__body">
+        <p class="toast__title">{{ toast.title }}</p>
+        @if (toast.message) {
+          <p class="toast__message">{{ toast.message }}</p>
+        }
+      </div>
+      <button
+        type="button"
+        class="toast__close"
+        (click)="dismiss(toast.id)"
+        aria-label="Dismiss notification"
+      >
+        <app-icon name="close" [size]="16" />
+      </button>
+    </div>
+  }
+</div>

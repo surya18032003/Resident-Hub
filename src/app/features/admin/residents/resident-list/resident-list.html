@@ -1,0 +1,126 @@
+<app-page-header title="Residents" subtitle="Every owner and tenant registered in the community.">
+  <button type="button" class="btn" (click)="load()" [disabled]="loading">Refresh</button>
+  <a class="btn btn--primary" routerLink="/admin/residents/create">
+    <app-icon name="plus" [size]="16" />
+    Create resident
+  </a>
+</app-page-header>
+
+<section class="card">
+  <div class="card__head">
+    <app-search-box
+      placeholder="Search name, email, phone or property…"
+      (valueChange)="onSearch($event)"
+    />
+    <span class="hint">{{ filtered().length }} of {{ residents.length }} residents</span>
+  </div>
+
+  @if (localCount() > 0) {
+    <p class="local-note">
+      <app-icon name="info" [size]="15" />
+      <span>
+        {{ localCount() }} resident{{ localCount() === 1 ? '' : 's' }} created here
+        {{ localCount() === 1 ? 'is' : 'are' }} shown from this browser — the API stores them but
+        <code>list_user</code> only ever returns a single record.
+      </span>
+      <button type="button" class="btn btn--sm btn--ghost" (click)="clearLocal()">Clear</button>
+    </p>
+  }
+
+  @if (loading) {
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone number</th>
+            <th>Property no.</th>
+            <th>Resident type</th>
+            <th>Created date</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of skeletonRows; track row) {
+            <tr>
+              @for (cell of [0, 1, 2, 3, 4, 5]; track cell) {
+                <td><span class="skeleton skeleton--cell"></span></td>
+              }
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  } @else if (loadError; as message) {
+    <app-empty-state icon="alert" tone="error" title="Could not load residents" [message]="message">
+      <button type="button" class="btn btn--primary btn--sm" (click)="load()">Try again</button>
+    </app-empty-state>
+  } @else if (filtered().length === 0) {
+    <app-empty-state
+      icon="users"
+      [title]="residents.length === 0 ? 'No residents yet' : 'No matching residents'"
+      [message]="
+        residents.length === 0
+          ? 'Create the first resident to populate the directory.'
+          : 'Try a different name, email, phone number or property number.'
+      "
+    >
+      @if (residents.length === 0) {
+        <a class="btn btn--primary btn--sm" routerLink="/admin/residents/create">Create resident</a>
+      }
+    </app-empty-state>
+  } @else {
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone number</th>
+            <th>Property no.</th>
+            <th>Resident type</th>
+            <th>Created date</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (resident of paged(); track resident._id) {
+            <tr>
+              <td>
+                <div class="who">
+                  <span class="who__avatar">{{ fullName(resident).charAt(0) }}</span>
+                  <span class="who__name">{{ fullName(resident) }}</span>
+                  @if (resident.__local) {
+                    <span
+                      class="badge badge--owner"
+                      title="Saved on the server, but not returned by the list endpoint"
+                      >New</span
+                    >
+                  }
+                </div>
+              </td>
+              <td>
+                <a [href]="'mailto:' + resident.email">{{ resident.email }}</a>
+              </td>
+              <td>{{ resident.mobile || '—' }}</td>
+              <td>{{ resident.property_no || '—' }}</td>
+              <td>
+                <span [class]="typeClass(resident.user_type)">{{
+                  resident.user_type || 'resident'
+                }}</span>
+              </td>
+              <td>{{ resident.created_time | apiDate: 'dd MMM yyyy' : true }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <app-pagination
+      [total]="filtered().length"
+      [page]="page"
+      [pageSize]="pageSize"
+      (pageChange)="goToPage($event)"
+      (pageSizeChange)="onPageSizeChange($event)"
+    />
+  }
+</section>

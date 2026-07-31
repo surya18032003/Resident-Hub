@@ -1,0 +1,73 @@
+<app-page-header [title]="'Hello, ' + name()" subtitle="Your community at a glance.">
+  <button type="button" class="btn" (click)="load()" [disabled]="loading">Refresh</button>
+  <a class="btn btn--primary" routerLink="/resident/announcements/all">
+    <app-icon name="megaphone" [size]="16" />
+    Open feed
+  </a>
+</app-page-header>
+
+@if (loadError; as message) {
+  <div class="alert alert--error dash__alert" role="alert">
+    <app-icon name="alert" [size]="18" />
+    <span>{{ message }}</span>
+  </div>
+}
+
+<section class="stats">
+  <app-stat-card
+    label="Announcements"
+    icon="megaphone"
+    [value]="announcements.length"
+    [loading]="loading"
+    hint="Shared with residents"
+    link="/resident/announcements/all"
+  />
+  <app-stat-card
+    label="Pinned"
+    icon="pin"
+    tone="warning"
+    [value]="pinnedCount()"
+    [loading]="loading"
+    hint="Kept for quick access"
+    link="/resident/announcements/pinned"
+  />
+  <app-stat-card
+    label="Upcoming events"
+    icon="calendar"
+    tone="info"
+    [value]="upcomingCount()"
+    [loading]="loading"
+    hint="Event date today or later"
+  />
+</section>
+
+<section class="latest">
+  <div class="latest__head">
+    <h2>Latest from management</h2>
+    <a class="btn btn--sm btn--ghost" routerLink="/resident/announcements/all">View all</a>
+  </div>
+
+  @if (loading) {
+    @for (row of [0, 1]; track row) {
+      <div class="card feed__skeleton">
+        <div class="skeleton feed__skeleton-avatar"></div>
+        <div class="feed__skeleton-lines">
+          <span class="skeleton" style="width: 45%"></span>
+          <span class="skeleton" style="width: 80%"></span>
+        </div>
+      </div>
+    }
+  } @else if (latest().length === 0) {
+    <div class="card">
+      <app-empty-state
+        icon="megaphone"
+        title="No announcements yet"
+        message="When management publishes something, it will appear here."
+      />
+    </div>
+  } @else {
+    @for (announcement of latest(); track announcement._id) {
+      <app-announcement-card [announcement]="announcement" />
+    }
+  }
+</section>

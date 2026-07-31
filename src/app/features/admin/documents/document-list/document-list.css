@@ -1,0 +1,49 @@
+.skeleton--cell {
+  display: block;
+  height: 0.9rem;
+  width: 80%;
+}
+
+.doc {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.doc__icon {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  flex: none;
+  border-radius: var(--radius-sm);
+  background: var(--brand-soft);
+  color: var(--brand);
+}
+
+.doc__title {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.expiry {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+}
+
+.remarks {
+  max-width: 18rem;
+  color: var(--text-muted);
+}
+
+.col-action {
+  text-align: right;
+}
+
+.actions {
+  display: inline-flex;
+  gap: 0.4rem;
+  justify-content: flex-end;
+}

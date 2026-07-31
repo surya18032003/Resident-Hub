@@ -1,0 +1,9 @@
+<div class="state card">
+  <span class="state__icon"><app-icon name="shield" [size]="28" /></span>
+  <h1>Access denied</h1>
+  <p>
+    This section is not available to a <strong>{{ roleLabel() }}</strong> account. If you think this
+    is a mistake, contact your community administrator.
+  </p>
+  <a class="btn btn--primary" [routerLink]="home()">Back to my dashboard</a>
+</div>

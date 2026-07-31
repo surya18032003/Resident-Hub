@@ -1,0 +1,140 @@
+<app-page-header title="Documents" subtitle="All uploaded documents, with their expiry status.">
+  <button type="button" class="btn" (click)="load()" [disabled]="loading">Refresh</button>
+  <a class="btn btn--primary" routerLink="/admin/documents/create">
+    <app-icon name="plus" [size]="16" />
+    Create document
+  </a>
+</app-page-header>
+
+<section class="card">
+  <div class="card__head">
+    <app-search-box
+      placeholder="Search title, category or remarks…"
+      (valueChange)="onSearch($event)"
+    />
+    <span class="hint">{{ filtered().length }} of {{ documents.length }} documents</span>
+  </div>
+
+  @if (localCount() > 0) {
+    <p class="local-note">
+      <app-icon name="info" [size]="15" />
+      <span>
+        {{ localCount() }} document{{ localCount() === 1 ? '' : 's' }} uploaded here
+        {{ localCount() === 1 ? 'is' : 'are' }} shown from this browser — the API stores them but
+        <code>list_document</code> only ever returns a single record, and it does not hand back the
+        stored file URL.
+      </span>
+      <button type="button" class="btn btn--sm btn--ghost" (click)="clearLocal()">Clear</button>
+    </p>
+  }
+
+  @if (loading) {
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Document title</th>
+            <th>Category</th>
+            <th>Expiry date</th>
+            <th>Remarks</th>
+            <th class="col-action">Document</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of skeletonRows; track row) {
+            <tr>
+              @for (cell of [0, 1, 2, 3, 4]; track cell) {
+                <td><span class="skeleton skeleton--cell"></span></td>
+              }
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  } @else if (loadError; as message) {
+    <app-empty-state icon="alert" tone="error" title="Could not load documents" [message]="message">
+      <button type="button" class="btn btn--primary btn--sm" (click)="load()">Try again</button>
+    </app-empty-state>
+  } @else if (filtered().length === 0) {
+    <app-empty-state
+      icon="folder"
+      [title]="documents.length === 0 ? 'No documents yet' : 'No matching documents'"
+      [message]="
+        documents.length === 0
+          ? 'Upload the first document to start tracking expiry dates.'
+          : 'Try a different title, category or remark.'
+      "
+    >
+      @if (documents.length === 0) {
+        <a class="btn btn--primary btn--sm" routerLink="/admin/documents/create">Create document</a>
+      }
+    </app-empty-state>
+  } @else {
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Document title</th>
+            <th>Category</th>
+            <th>Expiry date</th>
+            <th>Remarks</th>
+            <th class="col-action">Document</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (doc of paged(); track doc._id) {
+            <tr>
+              <td>
+                <div class="doc">
+                  <span class="doc__icon"><app-icon name="file" [size]="17" /></span>
+                  <span class="doc__title">{{ doc.document_title }}</span>
+                  @if (doc.__local) {
+                    <span
+                      class="badge badge--owner"
+                      title="Saved on the server, but not returned by the list endpoint"
+                      >New</span
+                    >
+                  }
+                </div>
+              </td>
+              <td>{{ doc.document_category || '—' }}</td>
+              <td>
+                <div class="expiry">
+                  <span>{{ doc.expiry_date | apiDate }}</span>
+                  @if (status(doc); as state) {
+                    <span [class]="state.className">{{ state.label }}</span>
+                  }
+                </div>
+              </td>
+              <td class="remarks">{{ doc.remarks || '—' }}</td>
+              <td class="col-action">
+                @if (fileUrl(doc); as url) {
+                  <div class="actions">
+                    <a class="btn btn--sm" [href]="url" target="_blank" rel="noopener">
+                      <app-icon name="eye" [size]="14" />
+                      View
+                    </a>
+                    <a class="btn btn--sm" [href]="url" [download]="doc.document_title">
+                      <app-icon name="download" [size]="14" />
+                      Download
+                    </a>
+                  </div>
+                } @else {
+                  <span class="muted">No file</span>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <app-pagination
+      [total]="filtered().length"
+      [page]="page"
+      [pageSize]="pageSize"
+      (pageChange)="goToPage($event)"
+      (pageSizeChange)="onPageSizeChange($event)"
+    />
+  }
+</section>

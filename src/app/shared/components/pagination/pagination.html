@@ -1,0 +1,54 @@
+<div class="pager">
+  <div class="pager__summary">
+    <span>
+      Showing <strong>{{ firstItem() }}</strong
+      >–<strong>{{ lastItem() }}</strong> of <strong>{{ total }}</strong>
+    </span>
+
+    <label class="pager__size">
+      Rows
+      <select [value]="pageSize" (change)="onPageSizeChange($event)" aria-label="Rows per page">
+        @for (option of pageSizeOptions; track option) {
+          <option [value]="option">{{ option }}</option>
+        }
+      </select>
+    </label>
+  </div>
+
+  <nav class="pager__nav" aria-label="Pagination">
+    <button
+      type="button"
+      class="pager__btn"
+      [disabled]="page === 1"
+      (click)="goToPage(page - 1)"
+      aria-label="Previous page"
+    >
+      <app-icon name="chevron-left" [size]="16" />
+    </button>
+
+    @for (number of pageNumbers(); track $index) {
+      @if (number === -1) {
+        <span class="pager__gap" aria-hidden="true">…</span>
+      } @else {
+        <button
+          type="button"
+          class="pager__btn"
+          [class.pager__btn--active]="number === page"
+          (click)="goToPage(number)"
+        >
+          {{ number }}
+        </button>
+      }
+    }
+
+    <button
+      type="button"
+      class="pager__btn"
+      [disabled]="page === totalPages()"
+      (click)="goToPage(page + 1)"
+      aria-label="Next page"
+    >
+      <app-icon name="chevron-right" [size]="16" />
+    </button>
+  </nav>
+</div>

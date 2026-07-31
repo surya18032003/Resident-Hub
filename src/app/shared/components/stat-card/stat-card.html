@@ -1,0 +1,24 @@
+<div class="stat" [class]="'stat--' + tone" [class.stat--link]="link !== null">
+  <span class="stat__icon"><app-icon [name]="icon" [size]="20" /></span>
+
+  <div class="stat__text">
+    <p class="stat__label">{{ label }}</p>
+
+    @if (loading) {
+      <span class="stat__skeleton" aria-hidden="true"></span>
+    } @else {
+      <p class="stat__value">{{ value }}</p>
+    }
+
+    @if (hint) {
+      <p class="stat__hint">{{ hint }}</p>
+    }
+  </div>
+
+  <!-- A link stretched over the whole tile, so the entire card is clickable. -->
+  @if (link) {
+    <a class="stat__overlay" [routerLink]="link">
+      <span class="sr-only">View {{ label }}</span>
+    </a>
+  }
+</div>

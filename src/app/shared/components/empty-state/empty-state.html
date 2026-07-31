@@ -1,0 +1,12 @@
+<div class="empty" [class.empty--error]="tone === 'error'">
+  <span class="empty__icon"><app-icon [name]="icon" [size]="26" /></span>
+
+  <p class="empty__title">{{ title }}</p>
+
+  @if (message) {
+    <p class="empty__message">{{ message }}</p>
+  }
+
+  <!-- Optional button, passed in by the parent. -->
+  <div class="empty__actions"><ng-content /></div>
+</div>

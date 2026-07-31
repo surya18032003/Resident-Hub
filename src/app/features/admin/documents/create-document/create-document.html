@@ -1,0 +1,162 @@
+<app-page-header
+  title="Create Document"
+  subtitle="Upload a document and set the expiry date that drives notifications."
+>
+  <a class="btn" routerLink="/admin/documents">
+    <app-icon name="folder" [size]="16" />
+    Document list
+  </a>
+</app-page-header>
+
+<div class="card">
+  <div class="card__head">
+    <h2 class="card__title">Document details</h2>
+    <span class="hint">Fields marked <span class="req">*</span> are required</span>
+  </div>
+
+  <form class="card__body" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    @if (apiError; as message) {
+      <div class="alert alert--error form-alert" role="alert">
+        <app-icon name="alert" [size]="18" />
+        <span>{{ message }}</span>
+      </div>
+    }
+
+    <div class="form-grid">
+      <div class="field">
+        <label class="label" for="document_title">Document title<span class="req">*</span></label>
+        <input
+          id="document_title"
+          type="text"
+          class="input"
+          [class.input--invalid]="!!error('document_title', 'Document title')"
+          formControlName="document_title"
+          placeholder="Agreement document"
+          maxlength="120"
+        />
+        @if (error('document_title', 'Document title'); as message) {
+          <p class="error"><app-icon name="alert" [size]="13" /> {{ message }}</p>
+        }
+      </div>
+
+      <div class="field">
+        <label class="label" for="document_category"
+          >Document category<span class="req">*</span></label
+        >
+        <input
+          id="document_category"
+          type="text"
+          class="input"
+          list="category-options"
+          [class.input--invalid]="!!error('document_category', 'Document category')"
+          formControlName="document_category"
+          placeholder="Agreement document"
+          maxlength="60"
+        />
+        <datalist id="category-options">
+          @for (suggestion of categorySuggestions; track suggestion) {
+            <option [value]="suggestion"></option>
+          }
+        </datalist>
+        @if (error('document_category', 'Document category'); as message) {
+          <p class="error"><app-icon name="alert" [size]="13" /> {{ message }}</p>
+        }
+      </div>
+
+      <div class="field">
+        <label class="label" for="expiry_date">Expiry date<span class="req">*</span></label>
+        <input
+          id="expiry_date"
+          type="date"
+          class="input"
+          [class.input--invalid]="!!error('expiry_date', 'Expiry date')"
+          formControlName="expiry_date"
+        />
+        @if (error('expiry_date', 'Expiry date'); as message) {
+          <p class="error"><app-icon name="alert" [size]="13" /> {{ message }}</p>
+        } @else {
+          <p class="hint">A notification is raised on this date.</p>
+        }
+      </div>
+
+      <div class="field">
+        <label class="label" for="remarks">Remarks</label>
+        <input
+          id="remarks"
+          type="text"
+          class="input"
+          [class.input--invalid]="!!error('remarks', 'Remarks')"
+          formControlName="remarks"
+          placeholder="Signed copy from the owner"
+          maxlength="500"
+        />
+        @if (error('remarks', 'Remarks'); as message) {
+          <p class="error"><app-icon name="alert" [size]="13" /> {{ message }}</p>
+        }
+      </div>
+
+      <div class="field field--wide">
+        <label class="label" for="file">Document file<span class="req">*</span></label>
+
+        <div
+          class="drop"
+          [class.drop--active]="dragging"
+          [class.drop--invalid]="!!error('file', 'Document file')"
+          (dragover)="onDragOver($event)"
+          (dragleave)="onDragLeave()"
+          (drop)="onDrop($event)"
+        >
+          <input
+            #fileInput
+            id="file"
+            type="file"
+            class="drop__input"
+            [accept]="accept"
+            (change)="onFileInput($event)"
+          />
+          <app-icon name="upload" [size]="26" />
+          <p class="drop__title">Drag a file here, or <span>browse</span></p>
+          <p class="drop__hint">PDF, Word, Excel or image · up to {{ maxSizeMb }} MB</p>
+        </div>
+
+        @if (error('file', 'Document file'); as message) {
+          <p class="error"><app-icon name="alert" [size]="13" /> {{ message }}</p>
+        }
+
+        @if (selectedFile; as file) {
+          <div class="picked">
+            <span class="picked__icon"><app-icon name="file" [size]="18" /></span>
+            <span class="picked__meta">
+              <strong>{{ file.name }}</strong>
+              <small>{{ fileSize() }}</small>
+            </span>
+            <button type="button" class="btn btn--sm" (click)="clearFile(fileInput)">
+              <app-icon name="close" [size]="14" />
+              Remove
+            </button>
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button
+        type="button"
+        class="btn btn--ghost"
+        (click)="reset(fileInput)"
+        [disabled]="submitting"
+      >
+        Reset
+      </button>
+      <button type="submit" class="btn btn--primary" [disabled]="submitting">
+        @if (submitting) {
+          <span class="spinner" aria-hidden="true"></span>
+          Uploading…
+        } @else {
+          <app-icon name="upload" [size]="16" />
+          Upload document
+        }
+      </button>
+    </div>
+  </form>
+</div>

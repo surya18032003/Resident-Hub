@@ -1,0 +1,96 @@
+<app-page-header
+  [title]="mode === 'pinned' ? 'Pinned Announcements' : 'Announcements'"
+  [subtitle]="
+    mode === 'pinned'
+      ? 'The announcements you have pinned for quick access.'
+      : 'Everything the community management team has shared.'
+  "
+>
+  <button type="button" class="btn" (click)="load()" [disabled]="loading">Refresh</button>
+</app-page-header>
+
+<div class="toolbar">
+  <app-search-box placeholder="Search announcements…" (valueChange)="onSearch($event)" />
+
+  <div class="chips" role="group" aria-label="Filter announcements">
+    <button
+      type="button"
+      class="chip-btn"
+      [class.chip-btn--on]="mode === 'all'"
+      (click)="show('all')"
+    >
+      All
+      <span class="chip-btn__count">{{ announcements.length }}</span>
+    </button>
+    <button
+      type="button"
+      class="chip-btn"
+      [class.chip-btn--on]="mode === 'pinned'"
+      (click)="show('pinned')"
+    >
+      Pinned
+      <span class="chip-btn__count">{{ pinnedCount() }}</span>
+    </button>
+  </div>
+</div>
+
+<div class="feed">
+  @if (loading) {
+    @for (item of skeletons; track item) {
+      <div class="card feed__skeleton">
+        <div class="skeleton feed__skeleton-avatar"></div>
+        <div class="feed__skeleton-lines">
+          <span class="skeleton" style="width: 45%"></span>
+          <span class="skeleton" style="width: 80%"></span>
+          <span class="skeleton" style="width: 65%"></span>
+        </div>
+      </div>
+    }
+  } @else if (loadError; as message) {
+    <div class="card">
+      <app-empty-state
+        icon="alert"
+        tone="error"
+        title="Could not load announcements"
+        [message]="message"
+      >
+        <button type="button" class="btn btn--primary btn--sm" (click)="load()">Try again</button>
+      </app-empty-state>
+    </div>
+  } @else if (visible().length === 0) {
+    <div class="card">
+      <app-empty-state
+        [icon]="mode === 'pinned' ? 'pin' : 'megaphone'"
+        [title]="
+          mode === 'pinned'
+            ? 'No pinned announcements'
+            : announcements.length === 0
+              ? 'No announcements yet'
+              : 'Nothing matches your search'
+        "
+        [message]="
+          mode === 'pinned'
+            ? 'Pin an announcement from the All Announcements feed to keep it here.'
+            : announcements.length === 0
+              ? 'When management publishes something, it will appear here.'
+              : 'Try a different search term.'
+        "
+      >
+        @if (mode === 'pinned') {
+          <button type="button" class="btn btn--primary btn--sm" (click)="show('all')">
+            Browse all announcements
+          </button>
+        }
+      </app-empty-state>
+    </div>
+  } @else {
+    @for (announcement of visible(); track announcement._id) {
+      <app-announcement-card
+        [announcement]="announcement"
+        [canPin]="true"
+        [pinning]="isPinning(announcement._id)"
+        (pinToggle)="togglePin($event)"
+      />
+    }
+  }
+</div>

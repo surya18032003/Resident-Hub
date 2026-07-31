@@ -1,0 +1,44 @@
+.wrap {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  padding: 2rem 1.25rem;
+}
+
+.state {
+  max-width: 32rem;
+  padding: 2.5rem 2rem;
+  text-align: center;
+}
+
+.state__icon {
+  display: grid;
+  place-items: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  margin: 0 auto 0.75rem;
+  border-radius: 50%;
+  background: var(--brand-soft);
+  color: var(--brand);
+}
+
+.state__code {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: var(--text-subtle);
+}
+
+.state h1 {
+  margin: 0.25rem 0 0.5rem;
+  font-size: 1.35rem;
+  font-weight: 650;
+}
+
+.state__text {
+  margin: 0 auto 1.5rem;
+  max-width: 40ch;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}

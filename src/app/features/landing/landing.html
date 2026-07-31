@@ -1,0 +1,181 @@
+<div class="page">
+  <!-- Depth layers behind everything -->
+  <div class="backdrop" aria-hidden="true">
+    <span class="orb orb--1"></span>
+    <span class="orb orb--2"></span>
+    <span class="orb orb--3"></span>
+    <div class="grid-floor"></div>
+  </div>
+
+  <header class="nav">
+    <a class="nav__brand" routerLink="/">
+      <span class="nav__logo"><app-icon name="building" [size]="20" /></span>
+      ResHub
+    </a>
+    <nav class="nav__links">
+      <a href="#features">Features</a>
+      <a href="#roles">Roles</a>
+    </nav>
+    <a class="btn btn--primary" routerLink="/login">
+      Sign in
+      <app-icon name="chevron-right" [size]="16" />
+    </a>
+  </header>
+
+  <!-- ------------------------------------------------------------- hero -->
+  <section class="hero">
+    <div class="hero__copy">
+      <span class="pill"><span class="pill__dot"></span> Role-based community platform</span>
+      <h1>
+        Run your community
+        <span class="grad">in three dimensions</span>
+      </h1>
+      <p>
+        Residents, announcements, documents and expiry alerts — one workspace that reshapes itself
+        around whoever signs in.
+      </p>
+
+      <div class="hero__cta">
+        <a class="btn btn--primary btn--lg" routerLink="/login">
+          Enter the workspace
+          <app-icon name="chevron-right" [size]="18" />
+        </a>
+        <a class="btn btn--lg btn--glass" href="#features">See what's inside</a>
+      </div>
+
+      <dl class="hero__stats">
+        <div>
+          <dt>2</dt>
+          <dd>Role-aware workspaces</dd>
+        </div>
+        <div>
+          <dt>4</dt>
+          <dd>Managed modules</dd>
+        </div>
+        <div>
+          <dt>100%</dt>
+          <dd>Reactive forms &amp; guards</dd>
+        </div>
+      </dl>
+    </div>
+
+    <!-- 3D stage -->
+    <div class="stage" (mousemove)="onMouseMove($event)" (mouseleave)="onMouseLeave()">
+      <div class="deck" [style.transform]="transform">
+        <!-- Back plate -->
+        <div class="plate plate--back"></div>
+
+        <!-- Main app mock -->
+        <div class="mock">
+          <div class="mock__bar">
+            <span></span><span></span><span></span>
+            <em>reshub / super admin</em>
+          </div>
+          <div class="mock__body">
+            <aside class="mock__nav">
+              <p class="mock__brand"><app-icon name="building" [size]="14" /> ResHub</p>
+              <span class="mock__link mock__link--on"
+                ><app-icon name="dashboard" [size]="13" /> Dashboard</span
+              >
+              <span class="mock__link"><app-icon name="users" [size]="13" /> Residents</span>
+              <span class="mock__link"
+                ><app-icon name="megaphone" [size]="13" /> Announcements</span
+              >
+              <span class="mock__link"><app-icon name="folder" [size]="13" /> Documents</span>
+              <span class="mock__link"><app-icon name="bell" [size]="13" /> Notifications</span>
+            </aside>
+            <div class="mock__main">
+              <div class="mock__tiles">
+                <div class="mock__tile"><small>Residents</small><strong>128</strong></div>
+                <div class="mock__tile"><small>Announcements</small><strong>36</strong></div>
+                <div class="mock__tile"><small>Documents</small><strong>54</strong></div>
+              </div>
+              <div class="mock__rows"><span></span><span></span><span></span><span></span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Floating cards in front -->
+        <div class="float float--pin">
+          <app-icon name="pin" [size]="15" [filled]="true" />
+          <span><strong>Pinned</strong><small>Diwali celebration</small></span>
+        </div>
+
+        <div class="float float--alert">
+          <app-icon name="alert" [size]="15" />
+          <span><strong>Expires today</strong><small>Rental contract</small></span>
+        </div>
+
+        <div class="float float--user">
+          <span class="float__avatar">PS</span>
+          <span><strong>Priya Sharma</strong><small>Owner · P-101</small></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- --------------------------------------------------------- features -->
+  <section class="section" id="features">
+    <header class="section__head">
+      <h2>Everything the community needs</h2>
+      <p>Six modules, one consistent design system, zero page reloads.</p>
+    </header>
+
+    <div class="cards">
+      @for (feature of features; track feature.title) {
+        <article class="tilt">
+          <span class="tilt__icon"><app-icon [name]="feature.icon" [size]="20" /></span>
+          <h3>{{ feature.title }}</h3>
+          <p>{{ feature.text }}</p>
+        </article>
+      }
+    </div>
+  </section>
+
+  <!-- ------------------------------------------------------------ roles -->
+  <section class="section" id="roles">
+    <header class="section__head">
+      <h2>Two doors, one platform</h2>
+      <p>The sidebar, routes and permissions are generated from the signed-in role.</p>
+    </header>
+
+    <div class="roles">
+      <article class="role role--admin">
+        <span class="role__badge"><app-icon name="shield" [size]="16" /> Super Admin</span>
+        <ul>
+          <li><app-icon name="check" [size]="15" /> Create residents and browse the directory</li>
+          <li><app-icon name="check" [size]="15" /> Publish announcements with images</li>
+          <li><app-icon name="check" [size]="15" /> Upload documents and track expiry</li>
+          <li><app-icon name="check" [size]="15" /> Review today's expiry notifications</li>
+        </ul>
+      </article>
+
+      <article class="role role--resident">
+        <span class="role__badge"><app-icon name="user" [size]="16" /> Resident</span>
+        <ul>
+          <li><app-icon name="check" [size]="15" /> Read every community announcement</li>
+          <li><app-icon name="check" [size]="15" /> Pin and unpin posts instantly</li>
+          <li><app-icon name="check" [size]="15" /> Filter down to pinned only</li>
+          <li><app-icon name="check" [size]="15" /> See upcoming events at a glance</li>
+        </ul>
+      </article>
+    </div>
+  </section>
+
+  <!-- -------------------------------------------------------------- cta -->
+  <section class="closing">
+    <div class="closing__inner">
+      <h2>Ready when you are</h2>
+      <p>Sign in with a demo account — both roles are one tap away on the login screen.</p>
+      <a class="btn btn--primary btn--lg" routerLink="/login">
+        Sign in to ResHub
+        <app-icon name="chevron-right" [size]="18" />
+      </a>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <span>© ResHub — Angular Developer Practical Assessment</span>
+    <a routerLink="/login">Sign in</a>
+  </footer>
+</div>

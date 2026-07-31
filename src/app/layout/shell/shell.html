@@ -1,0 +1,26 @@
+<div class="shell" [class.shell--nav-open]="sidebarOpen">
+  @if (isLoading()) {
+    <div class="shell__progress" role="progressbar" aria-label="Loading"></div>
+  }
+
+  <app-sidebar class="shell__sidebar" />
+
+  <!-- The dark overlay behind the mobile sidebar. Tapping it closes. -->
+  <button
+    type="button"
+    class="shell__scrim"
+    [hidden]="!sidebarOpen"
+    (click)="closeSidebar()"
+    tabindex="-1"
+    aria-label="Close navigation"
+  ></button>
+
+  <div class="shell__main">
+    <app-topbar (menuToggle)="toggleSidebar()" />
+
+    <main class="shell__content">
+      <!-- The current page is drawn here, chosen by app.routes.ts. -->
+      <router-outlet />
+    </main>
+  </div>
+</div>

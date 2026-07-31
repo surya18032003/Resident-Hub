@@ -1,0 +1,173 @@
+<app-page-header
+  title="Create Resident"
+  subtitle="Add an owner or tenant to the community directory."
+>
+  <a class="btn" routerLink="/admin/residents">
+    <app-icon name="users" [size]="16" />
+    Resident list
+  </a>
+</app-page-header>
+
+<div class="card">
+  <div class="card__head">
+    <h2 class="card__title">Resident details</h2>
+    <span class="hint">Fields marked <span class="req">*</span> are required</span>
+  </div>
+
+  <form class="card__body" [formGroup]="form" (ngSubmit)="submit(false)" novalidate>
+    @if (apiError; as message) {
+      <div class="alert alert--error form-alert" role="alert">
+        <app-icon name="alert" [size]="18" />
+        <span>{{ message }}</span>
+      </div>
+    }
+
+    <div class="form-grid">
+      <div class="field">
+        <label class="label" for="name">First name<span class="req">*</span></label>
+        <input
+          id="name"
+          type="text"
+          class="input"
+          [class.input--invalid]="!!error('name', 'First name')"
+          formControlName="name"
+          placeholder="Priya"
+          autocomplete="given-name"
+        />
+        @if (error('name', 'First name'); as message) {
+          <p class="error"><app-icon name="alert" [size]="13" /> {{ message }}</p>
+        }
+      </div>
+
+      <div class="field">
+        <label class="label" for="last_name">Last name<span class="req">*</span></label>
+        <input
+          id="last_name"
+          type="text"
+          class="input"
+          [class.input--invalid]="!!error('last_name', 'Last name')"
+          formControlName="last_name"
+          placeholder="Sharma"
+          autocomplete="family-name"
+        />
+        @if (error('last_name', 'Last name'); as message) {
+          <p class="error"><app-icon name="alert" [size]="13" /> {{ message }}</p>
+        }
+      </div>
+
+      <div class="field">
+        <label class="label" for="email">Email<span class="req">*</span></label>
+        <input
+          id="email"
+          type="email"
+          class="input"
+          [class.input--invalid]="!!error('email', 'Email')"
+          formControlName="email"
+          placeholder="priya@example.com"
+          autocomplete="email"
+        />
+        @if (error('email', 'Email'); as message) {
+          <p class="error"><app-icon name="alert" [size]="13" /> {{ message }}</p>
+        }
+      </div>
+
+      <div class="field">
+        <label class="label" for="mobile">Phone number<span class="req">*</span></label>
+        <input
+          id="mobile"
+          type="tel"
+          inputmode="numeric"
+          maxlength="10"
+          class="input"
+          [class.input--invalid]="!!error('mobile', 'Phone number')"
+          formControlName="mobile"
+          placeholder="9876543210"
+          autocomplete="tel-national"
+        />
+        @if (error('mobile', 'Phone number'); as message) {
+          <p class="error"><app-icon name="alert" [size]="13" /> {{ message }}</p>
+        } @else {
+          <p class="hint">10 digits, starting with 6–9.</p>
+        }
+      </div>
+
+      <div class="field">
+        <label class="label" for="property_no">Property number<span class="req">*</span></label>
+        <input
+          id="property_no"
+          type="text"
+          class="input"
+          [class.input--invalid]="!!error('property_no', 'Property number')"
+          formControlName="property_no"
+          placeholder="P-101"
+        />
+        @if (error('property_no', 'Property number'); as message) {
+          <p class="error"><app-icon name="alert" [size]="13" /> {{ message }}</p>
+        }
+      </div>
+
+      <div class="field">
+        <label class="label" for="user_type">Resident type<span class="req">*</span></label>
+        <select
+          id="user_type"
+          class="select"
+          [class.select--invalid]="!!error('user_type', 'Resident type')"
+          formControlName="user_type"
+        >
+          @for (type of residentTypes; track type.value) {
+            <option [value]="type.value">{{ type.label }}</option>
+          }
+        </select>
+        @if (error('user_type', 'Resident type'); as message) {
+          <p class="error"><app-icon name="alert" [size]="13" /> {{ message }}</p>
+        }
+      </div>
+
+      <div class="field field--wide">
+        <label class="label" for="password">Password<span class="req">*</span></label>
+        <div class="control">
+          <input
+            id="password"
+            [type]="showPassword ? 'text' : 'password'"
+            class="input input--with-action"
+            [class.input--invalid]="!!error('password', 'Password')"
+            formControlName="password"
+            placeholder="At least 8 characters"
+            autocomplete="new-password"
+          />
+          <button
+            type="button"
+            class="control__action"
+            (click)="togglePassword()"
+            [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'"
+          >
+            <app-icon [name]="showPassword ? 'eye-off' : 'eye'" [size]="17" />
+          </button>
+        </div>
+        @if (error('password', 'Password'); as message) {
+          <p class="error"><app-icon name="alert" [size]="13" /> {{ message }}</p>
+        } @else {
+          <p class="hint">Minimum 8 characters with a letter, a number and a symbol.</p>
+        }
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="btn btn--ghost" (click)="reset()" [disabled]="submitting">
+        Reset
+      </button>
+      <button type="button" class="btn" (click)="submit(true)" [disabled]="submitting">
+        Save &amp; add another
+      </button>
+      <button type="submit" class="btn btn--primary" [disabled]="submitting">
+        @if (submitting) {
+          <span class="spinner" aria-hidden="true"></span>
+          Creating…
+        } @else {
+          <app-icon name="plus" [size]="16" />
+          Create resident
+        }
+      </button>
+    </div>
+  </form>
+</div>
