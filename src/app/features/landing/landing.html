@@ -1,5 +1,4 @@
 <div class="page">
-  <!-- Depth layers behind everything -->
   <div class="backdrop" aria-hidden="true">
     <span class="orb orb--1"></span>
     <span class="orb orb--2"></span>
@@ -13,8 +12,8 @@
       ResHub
     </a>
     <nav class="nav__links">
-      <a href="#features">Features</a>
-      <a href="#roles">Roles</a>
+    <a routerLink="/" fragment="features">Features</a>
+     <a routerLink="/" fragment="roles">Roles</a>
     </nav>
     <a class="btn btn--primary" routerLink="/login">
       Sign in
@@ -22,7 +21,6 @@
     </a>
   </header>
 
-  <!-- ------------------------------------------------------------- hero -->
   <section class="hero">
     <div class="hero__copy">
       <span class="pill"><span class="pill__dot"></span> Role-based community platform</span>
@@ -40,7 +38,7 @@
           Enter the workspace
           <app-icon name="chevron-right" [size]="18" />
         </a>
-        <a class="btn btn--lg btn--glass" href="#features">See what's inside</a>
+        <!-- <a class="btn btn--lg btn--glass" href="#features">See what's inside</a> -->
       </div>
 
       <dl class="hero__stats">
@@ -74,13 +72,9 @@
           <div class="mock__body">
             <aside class="mock__nav">
               <p class="mock__brand"><app-icon name="building" [size]="14" /> ResHub</p>
-              <span class="mock__link mock__link--on"
-                ><app-icon name="dashboard" [size]="13" /> Dashboard</span
-              >
+              <span class="mock__link mock__link--on"><app-icon name="dashboard" [size]="13" /> Dashboard</span>
               <span class="mock__link"><app-icon name="users" [size]="13" /> Residents</span>
-              <span class="mock__link"
-                ><app-icon name="megaphone" [size]="13" /> Announcements</span
-              >
+              <span class="mock__link"><app-icon name="megaphone" [size]="13" /> Announcements</span>
               <span class="mock__link"><app-icon name="folder" [size]="13" /> Documents</span>
               <span class="mock__link"><app-icon name="bell" [size]="13" /> Notifications</span>
             </aside>
@@ -114,7 +108,6 @@
     </div>
   </section>
 
-  <!-- --------------------------------------------------------- features -->
   <section class="section" id="features">
     <header class="section__head">
       <h2>Everything the community needs</h2>
@@ -123,16 +116,15 @@
 
     <div class="cards">
       @for (feature of features; track feature.title) {
-        <article class="tilt">
-          <span class="tilt__icon"><app-icon [name]="feature.icon" [size]="20" /></span>
-          <h3>{{ feature.title }}</h3>
-          <p>{{ feature.text }}</p>
-        </article>
+      <article class="tilt">
+        <span class="tilt__icon"><app-icon [name]="feature.icon" [size]="20" /></span>
+        <h3>{{ feature.title }}</h3>
+        <p>{{ feature.text }}</p>
+      </article>
       }
     </div>
   </section>
 
-  <!-- ------------------------------------------------------------ roles -->
   <section class="section" id="roles">
     <header class="section__head">
       <h2>Two doors, one platform</h2>
@@ -162,7 +154,6 @@
     </div>
   </section>
 
-  <!-- -------------------------------------------------------------- cta -->
   <section class="closing">
     <div class="closing__inner">
       <h2>Ready when you are</h2>
